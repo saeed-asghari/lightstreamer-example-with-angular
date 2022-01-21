@@ -11,10 +11,10 @@ Copyright (c) Lightstreamer Srl
    limitations under the License.
 */
 import { Injectable } from '@angular/core';
-
-declare var LightstreamerClient: any;
-declare var Subscription: any;
-declare var StatusWidget: any;
+import {Subscription,StatusWidget, LightstreamerClient} from 'lightstreamer-client-web';
+// declare var LightstreamerClient: any;
+// declare var Subscription: any;
+//declare var StatusWidget: any;
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,12 @@ export class StockListService {
 
         const lsClient = new LightstreamerClient(
             (document.location.protocol === 'https:' ? 'https' : 'http') + '://push.lightstreamer.com', 'DEMO');
-        lsClient.connectionSharing.enableSharing('DemoCommonConnection', 'ATTACH', 'CREATE');
+      //  lsClient.connectionSharing.enableSharing('DemoCommonConnection', 'ATTACH', 'CREATE');
+      subscription.addListener({
+        onItemUpdate: function(obj) {
+          console.log(obj.getValue("stock_name") + ": " + obj.getValue("last_price"));
+        }
+    });
         lsClient.addListener(new StatusWidget('left', '0px', true));
         lsClient.connect();
         lsClient.subscribe(subscription);
